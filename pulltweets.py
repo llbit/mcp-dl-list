@@ -31,6 +31,8 @@ urls = Set()
 for link in data['urls']:
 	urls.add(link['url'])
 
+updated = False
+
 # access latest tweets
 api = twitter.Api(**config)
 for tweet in api.GetUserTimeline(screen_name='SeargeDP'):
@@ -39,7 +41,9 @@ for tweet in api.GetUserTimeline(screen_name='SeargeDP'):
 		if r and not url in urls:
 			data['urls'].append({'url': url, 'tweet': tweet.id})
 			print "MCP %s: %s" % (r.groups()[0], url)
+			updated = True
 
-data['timestamp'] = datetime.now().isoformat()
-with open('data.json', 'w') as f:
-	json.dump(data, f)
+if updated:
+	data['timestamp'] = datetime.now().isoformat()
+	with open('data.json', 'w') as f:
+		json.dump(data, f)
