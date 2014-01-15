@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>MCP Beta Links</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+function load() {
+	$.ajax({
+		url: 'data.json',
+		dataType: 'json',
+		success: function (data) {
+			var content = document.body;
+			$.each(data.urls, function (index,value) {
+				var url = value.url;
+				var id = value.tweet;
+				var re = /mcp([0-9]+).zip$/;
+				var ver = re.exec(url)[1];
+				var div = document.createElement('div');
+				div.innerHTML = 'MCP '+ver+': <a href="'+url+'">'+url+
+					'</a> <a href="https://twitter.com/SeargeDP/status/'+
+					id+'">source tweet</a>';
+				content.appendChild(div);
+			});
+			var div = document.createElement('div');
+			div.innerHTML = 'updated '+data.timestamp;
+			content.appendChild(div);
+		}
+	});
+}
+</script>
+	</head>
+<body onload="load()">
+	<h1>Latest MCP Beta Links</h1>
+	<p><em>This list is periodically updated from the developers
+		<a href="https://twitter.com/SeargeDP">twitter feed.</a></em></p>
+</body>
+</html>
