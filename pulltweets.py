@@ -16,6 +16,8 @@
 import json
 import twitter
 import re
+import sys
+
 from sets import Set
 from datetime import datetime
 mcp_re = re.compile('.+/mcp(\d+).zip$')
@@ -35,11 +37,11 @@ updated = False
 
 # access latest tweets
 api = twitter.Api(**config)
-for tweet in api.GetUserTimeline(screen_name='SeargeDP'):
+for tweet in reversed(api.GetUserTimeline(screen_name='SeargeDP')):
 	for url in [u.expanded_url for u in tweet.urls]:
 		r = mcp_re.match(url)
 		if r and not url in urls:
-			data['urls'].append({'url': url, 'tweet': tweet.id})
+			data['urls'].insert(0, {'url': url, 'tweet': tweet.id})
 			print "MCP %s: %s" % (r.groups()[0], url)
 			updated = True
 
@@ -47,3 +49,5 @@ if updated:
 	data['timestamp'] = datetime.now().isoformat()
 	with open('data.json', 'w') as f:
 		json.dump(data, f)
+else:
+	sys.exit(1)
