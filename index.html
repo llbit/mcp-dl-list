@@ -1,7 +1,27 @@
 <html>
 	<head>
-		<title>MCP Beta Links</title>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<title>MCP Download Links</title>
+<style>
+#table {
+  display:table;
+}
+.row {
+  display:table-row;
+}
+.cell {
+  display:table-cell;
+  padding-left:13px;
+}
+.head .cell {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding-bottom: 4px;
+}
+.odd .cell {
+  background-color: #eee;
+}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script>
 function load() {
 	$.ajax({
@@ -9,29 +29,35 @@ function load() {
 		dataType: 'json',
 		success: function (data) {
 			var content = document.body;
+			var tbl = $('#table');
 			$.each(data.urls, function (index,value) {
 				var url = value.url;
-				var id = value.tweet;
-				var re = /mcp([0-9]+).zip$/;
+				var id = value.id;
+				var re = /mcp([0-9]+.*).(zip|7z)$/;
 				var ver = re.exec(url)[1];
-				var div = document.createElement('div');
-				div.innerHTML = 'MCP '+ver+': <a href="'+url+'">'+url+
-					'</a> <a href="https://twitter.com/SeargeDP/status/'+
-					id+'">source tweet</a>';
-				content.appendChild(div);
+				var row = $('<div>', {class: 'row'});
+				row.append('<div class="cell">'+ver+'</div>');
+				if (index % 2 == 1) {
+					row.addClass('odd');
+				}
+				row.append('<div class="cell"><a href="'+url+'">'+url+'</a></div>');
+				row.append('<div class="cell"><a href="https://twitter.com/SeargeDP/status/'+id+'">tweet</a></div>');
+				tbl.append(row);
 			});
-			var div = document.createElement('div');
-			div.innerHTML = 'updated '+data.timestamp;
-			content.appendChild(div);
+			$(document.body).append('<div>updated '+data.timestamp+'</div>');
 		}
 	});
 }
 </script>
 	</head>
 <body onload="load()">
-	<h1>Latest MCP Download Links</h1>
+	<h1>MCP Download Links</h1>
 	<p><em>This list is periodically updated from the developers
-		<a href="https://twitter.com/SeargeDP">twitter feed.</a></em></p>
-	<p>Check out the code on <a href="https://github.com/llbit/mcp-dl-list/">GitHub</a>!</p>
+		<a href="https://twitter.com/SeargeDP">twitter feed.</a></em>
+	<div id="table">
+		<div class="row head"><div class="cell">MCP Version</div><div class="cell">Download Link</div><div class="cell">Source Tweet</div></div>
+	</div>
+	<p><a href="http://llbit.se/?p=1975">Why does this exist?</a>
+	<p><a href="http://mcpold.ocean-labs.de/files/mcptest/">Latest test mapping CSVs</a>
 </body>
 </html>
